@@ -1,0 +1,2606 @@
+directive @cacheControl(
+  maxAge: Int
+  scope: CacheControlScope
+) on FIELD_DEFINITION | OBJECT | INTERFACE
+
+scalar JSON
+
+scalar RawObject
+
+# Base Query type
+type Query {
+  hello: String
+  helloJSON: RawObject
+
+  # Latest videos to be display in the home page - DEPRECATED: use query allVideos instead
+  latestVideos(
+    # Number of videos required
+    limit: Int = 10
+
+    # Teams for which we are requesting the videos
+    teamIds: [ID]
+  ): [Video]
+
+  # Return {limit} videos tagged with "highlight" ordered by descending startDate.
+  highlights(limit: Int = 10): Videos
+
+  # Get a video by its id
+  video(id: ID!): Video!
+
+  # Get a url of the video and associated event by its id
+  videoAccess(id: ID!): VideoAccess!
+
+  # Return all events of current account, results can be filtered. This can be used to implement search feature.
+  searchVideos(
+    # term to be searched
+    term: String
+
+    # Number of videos required
+    limit: Int = 10
+
+    # Cursor to be used in order to fetch videos before it
+    before: String
+
+    # Cursor to be used in order to fetch videos after it
+    after: String
+  ): Videos
+
+  # Return a paginated list of videos by creation date.
+  allVideos(
+    # Number of videos required
+    limit: Int = 10
+
+    # Teams for which we are requesting the videos
+    teamIds: [ID]
+
+    # State of videos for filtering
+    state: EventState
+
+    # State of videos for filtering
+    visibility: Visibility
+
+    # Cursor to be used in order to fetch videos before it
+    before: String
+
+    # Cursor to be used in order to fetch videos after it
+    after: String
+
+    # Tags for which we want the list of videos (videos must verify all the provided tags : AND condition)
+    # They must be a string structured the following way : 'tag1,tag2,tag3'.
+    # If needed tags can be specified with a type : 'type1:tag11,type1:tag12,type2:tag21'
+    tags: String
+
+    # TagIds for which we want the list of videos (videos must verify all the provided tags : AND condition)
+    # They must be a string structured the following way : 'tagId1,tagId2,tagId3'.
+    tagIds: String
+
+    # ID of the competition
+    CompetitionId: ID
+
+    # ID of the season
+    SeasonId: ID
+
+    # ID if the round
+    RoundId: ID
+
+    # ID if the challenger
+    ChallengerId: ID
+  ): Videos!
+
+  # Get a news by its id
+  news(
+    # id - in case of Kentico, id is the codename
+    id: String!
+
+    # set of parameters, for example width and height of the player embedded code for an event
+    #
+    # here are the parameters that can be set to embedded sports player
+    # { width = '600', height = '450', mute = 'false', autoplay = 'true' }
+    params: RawObject
+  ): News!
+
+  # Return a paginated list of news by creation date.
+  allNews(
+    # Number of news required
+    limit: Int = 10
+
+    # Cursor to be used in order to fetch news before it
+    before: String
+
+    # Cursor to be used in order to fetch news after it
+    after: String
+  ): PNews!
+
+  # All the teams
+  allTeams(
+    # Number of teammates required
+    # Specific note for teammates : at the moment we experience an issue in our ORM that will make this query crash
+    # if a limit is provided.
+    # THIS LIMIT PARAMETER MUST NOT BE PASSED.
+    limit: Int
+
+    # Cursor to be used in order to fetch teams before it
+    before: String
+
+    # Cursor to be used in order to fetch teams after it
+    after: String
+
+    # Season Id
+    SeasonId: ID
+
+    # Competition Id
+    CompetitionId: ID
+
+    # Cache key
+    cacheKey: String
+  ): Teams!
+
+  # Get a team by its id
+  team(id: ID!): Team!
+
+  # Return filtered teams based on query. This can be used to implement search feature.
+  searchTeams(filter: TeamFilterInput): [Team]
+
+  # All the teammates
+  allTeammates(
+    # Number of teammates required
+    # Specific note for teammates : at the moment we experience an issue in our ORM that will make this query crash
+    # if a limit is provided.
+    # THIS LIMIT PARAMETER MUST NOT BE PASSED.
+    limit: Int
+
+    # Cursor to be used in order to fetch teammates before it
+    before: String
+
+    # Cursor to be used in order to fetch teammates after it
+    after: String
+
+    # Season Id
+    SeasonId: ID
+
+    # Competition Id
+    CompetitionId: ID
+
+    # Team Id
+    TeamId: ID
+
+    # Player Role Id
+    PlayerRoleId: String
+  ): Teammates!
+
+  # Get a teammate by its id
+  teammate(id: ID!): Teammate!
+
+  # Return {limit} random event(s) (default to 4) in most recent events.
+  # Those events must have a video and be in replay.
+  spotlight(limit: Int = 8): [Event]
+
+  # Return {limit} upcoming event(s) (default to 8).
+  fixtures(limit: Int = 8): [Event]
+
+  # Return {limit} (default to 8) current or preceding, compared to the server time, replay events.
+  # Those events must have a video and be in replay.
+  results(limit: Int = 8): [Event]
+
+  # Get an event by its id
+  event(id: ID!): Event
+
+  # Check event access
+  eventAccess(id: ID!): EventAccess!
+
+  # Return a paginated list of events by creation date.
+  allEvents(
+    # Number of events required
+    limit: Int = 10
+
+    # Cursor to be used in order to fetch events before it
+    before: String
+
+    # Cursor to be used in order to fetch events after it
+    after: String
+
+    # Tags for which we want the list of events (events must verify all the provided tags : AND condition)
+    # They must be a string structured the following way : 'tag1,tag2,tag3'.
+    # If needed tags can be specified with a type : 'type1:tag11,type1:tag12,type2:tag21'
+    tags: String
+
+    # ID of the competition
+    CompetitionId: ID
+
+    # ID of the season
+    SeasonId: ID
+
+    # ID if the round
+    RoundId: ID
+
+    # ID if the challenger
+    ChallengerId: ID
+
+    # How to sort event: startDate (= startDate ASC), -startDate (= startDate DESC), etc.
+    sort: String = "startDate"
+  ): Events!
+
+  # Return all events of current account, results can be filtered. This can be used to implement search feature.
+  listEvents(filter: EventFilterInput): [Event]
+
+  # Return all fixtures of current account, results can be filtered.
+  listFixtures(filter: EventFilterInput): [Event]
+
+  # Return all results of current account, results can be filtered.
+  listResults(filter: EventFilterInput): [Event]
+
+  # Ask for a new access token to a given vendor (SSO process)
+  vendorAuthRequestToken(vendorName: String!): VendorAccessToken!
+
+  # Validate a fan access token at SSO side (SSO process)
+  validateFanSSOToken(
+    # vendor (project) name
+    vendorName: String!
+
+    # fan SSO access token
+    fanSSOToken: String
+
+    # fan SSO id
+    fanSSOId: String
+  ): Boolean
+
+  # Query to fetch its information
+  me: Fan!
+  indexActivities(
+    # Type of required activities
+    type: ActivityType
+
+    # Resource Type of required activities
+    resourceType: ResourceType
+
+    # Number of activities required
+    limit: Int
+
+    # Cursor to be used in order to fetch activities before it
+    before: String
+
+    # Cursor to be used in order to fetch activities after it
+    after: String
+  ): FanActivities!
+
+  # All the seasons
+  allSeasons(
+    # Number of seasons required
+    limit: Int = 20
+
+    # Cursor to be used in order to fetch seasons before it
+    before: String
+
+    # Cursor to be used in order to fetch seasons after it
+    after: String
+  ): Seasons!
+
+  # Current season
+  currentSeason: Season
+
+  # All the competitions
+  allCompetitions(
+    # Number of competitions required
+    limit: Int = 20
+
+    # Cursor to be used in order to fetch competitions before it
+    before: String
+
+    # Cursor to be used in order to fetch competitions after it
+    after: String
+  ): Competitions!
+
+  # All the rounds
+  allRounds(
+    # Number of rounds required
+    limit: Int = 20
+
+    # ID if the competition
+    CompetitionId: ID!
+
+    # ID if the season
+    SeasonId: ID!
+
+    # Cursor to be used in order to fetch rounds before it
+    before: String
+
+    # Cursor to be used in order to fetch rounds after it
+    after: String
+  ): Rounds!
+
+  # Get a round by its id
+  round(
+    # ID if the competition
+    CompetitionId: ID!
+
+    # ID if the season
+    SeasonId: ID!
+
+    # ID if the round
+    id: ID!
+  ): Round!
+
+  # Get stats by type
+  getStats(
+    # Filters
+    filters: RawObject
+  ): RawObject
+  getStandings(SeasonId: ID, CompetitionId: ID, session: String): RawObject
+
+  # All the Payment offers
+  allPaymentOffers(
+    # Type is either plan for subscriptions or sku for one time payments
+    paymentOfferType: PaymentOfferType
+
+    # Billing interval
+    interval: String
+
+    # Number of Payment offers required
+    limit: Int
+
+    # Cursor to be used in order to fetch rounds before it
+    before: String
+
+    # Cursor to be used in order to fetch rounds after it
+    after: String
+  ): [PaymentOffer]!
+
+  # Fetch a stripe coupon for the given promotion code (Depracated - use getStripeCoupon instead)
+  showStripeCoupon(promoCode: String!): StripeCoupon!
+
+  # Fetch a stripe coupon for the given promotion code
+  getStripeCoupon(promoCode: String!): StripeCoupon!
+
+  # Get an clip by its id
+  clip(id: ID!): Clip
+
+  # Return a paginated list of clips by creation date.
+  allClips(
+    # Number of clips required
+    limit: Int = 10
+
+    # Cursor to be used in order to fetch clips before it
+    before: String
+
+    # Cursor to be used in order to fetch clips after it
+    after: String
+
+    # Tags for which we want the list of clips (clips must verify all the provided tags : AND condition)
+    # They must be a string structured the following way : 'tag1,tag2,tag3'.
+    # If needed tags can be specified with a type : 'type1:tag11,type1:tag12,type2:tag21'
+    tags: String
+
+    # the ud of the owner for the clips we want to fetch
+    UserId: String
+  ): Clips!
+
+  # Return a paginated list of current user's clips by creation date.
+  myClips(
+    # Number of clips required
+    limit: Int = 10
+
+    # Cursor to be used in order to fetch clips before it
+    before: String
+
+    # Cursor to be used in order to fetch clips after it
+    after: String
+
+    # Tags for which we want the list of clips (clips must verify all the provided tags : AND condition)
+    # They must be a string structured the following way : 'tag1,tag2,tag3'.
+    # If needed tags can be specified with a type : 'type1:tag11,type1:tag12,type2:tag21'
+    tags: String
+  ): Clips!
+
+  # Get an tag by its id
+  tag(id: ID!): Tag
+
+  # Return a paginated list of tags by creation date.
+  indexTags(
+    # Number of tags required
+    limit: Int = 10
+
+    # Cursor to be used in order to fetch tags before it
+    before: String
+
+    # Cursor to be used in order to fetch tags after it
+    after: String
+
+    # Tag type to be searched
+    tagType: String
+
+    # Filter tags that re followable
+    followable: Boolean
+  ): Tags!
+
+  # All roles
+  allPlayerRoles: [PlayerRole]
+
+  # All stats types
+  allStatsTypes(
+    type: StatsTypesType
+    PlayerRoleId: String
+    limit: Int = 200
+  ): StatsTypes
+
+  # Query to be used in order to reload a given dynamic section according to its cms id and tags
+  getPageSectionDynamic(
+    # section codename
+    pageSectionName: String!
+
+    # Array of tags used to filter the items fetched
+    filters: [InputPageSectionFilters]
+
+    # Number of items required
+    limit: Int = 12
+
+    # Cursor to be used in order to fetch activities before it
+    before: String
+
+    # Cursor to be used in order to fetch activities after it
+    after: String
+  ): PageSectionDynamic
+
+  # Query to be used in order to reload a given dynamic section according to its cms id and tags
+  getPageSectionStatic(
+    # section codename
+    pageSectionName: String!
+  ): PageSectionStatic
+
+  # Query to be used in order to load a given page according to its cms id
+  getPage(
+    # page codename
+    pageName: String!
+  ): Page
+
+  # Fetch a CMS page according to its codename
+  getCMSPage(
+    # page codename
+    CMSPageCodename: String!
+
+    # Preview flag
+    previewFlag: Boolean
+  ): CMSPage
+
+  # Fetch a CMS static section
+  getCMSSectionStatic(
+    # CMS section codename
+    CMSSectionCodename: String!
+
+    # Preview flag
+    previewFlag: Boolean
+  ): CMSSectionStatic
+
+  # Fetch a CMS dynamic section
+  getCMSSectionDynamic(
+    # CMS section codename
+    CMSSectionCodename: String!
+
+    # Array of tags used to filter the items fetched
+    filters: [InputCMSSectionFilters]
+
+    # Number of items required
+    limit: Int = 12
+
+    # Cursor to be used in order to fetch activities before it
+    before: String
+
+    # Cursor to be used in order to fetch activities after it
+    after: String
+
+    # Preview flag
+    previewFlag: Boolean
+  ): CMSSectionDynamic
+
+  # Fetch a CMS custom section
+  getCMSSectionCustom(
+    # CMS section codename
+    CMSSectionCodename: String!
+
+    # Preview flag
+    previewFlag: Boolean
+  ): CMSSectionCustom
+
+  # Fetch all products
+  allProducts(
+    # Number of products required
+    limit: Int = 10
+
+    # Cursor to be used in order to fetch products before it
+    before: String
+
+    # Cursor to be used in order to fetch products after it
+    after: String
+
+    # product status
+    status: String
+  ): Products!
+}
+
+# Base Mutation type
+type Mutation {
+  sendContactEmail(input: ContactInput!): ContactOutput!
+
+  # Login the user
+  login(input: LoginInput!): AccessToken!
+
+  # Logout the user
+  logout: String!
+
+  # Ask for a new access token using a refresh token
+  refreshToken(refreshToken: String!): AccessToken!
+
+  # Create a new account
+  signup(input: FanInput!): Fan!
+
+  # Update the fan's account to set status to 'active'
+  confirmAccount(confirmationToken: String!): Fan!
+
+  # Ask the server to resend a confirmation link
+  reconfirmAccount: Fan!
+
+  # Update the fan's account to set the new password
+  resetPassword(input: ResetPasswordInput!): Fan!
+
+  # Ask the server to trigger a email to the user for reseting his password
+  forgotPassword(email: String!): String!
+
+  # Delete my account
+  deleteAccount: Fan!
+
+  # Update my account
+  updateAccount(input: FanInput!): Fan!
+
+  # Validate the data before creating an account
+  validateAccount(input: FanInput!): String!
+
+  # Add a completed Apple in-app purchase to the fan's meta
+  addAppleOrder(input: FanMetaPaymentAppleOrderInput!): Fan!
+
+  # Create a stripe subscription
+  createStripeSubscription(
+    # Custromer name
+    name: String
+
+    # Custromer email
+    email: String
+
+    # Stripe paymentMethod Id
+    paymentMethodId: String!
+
+    # Stripe plan Id
+    paymentOfferId: ID!
+
+    # Stripe coupon id
+    couponId: String
+  ): StripeSubscriptionStatus
+
+  # Delete a stripe subscription returns its stripeSubscriptionId
+  deleteStripeSubscription(stripeSubscriptionId: String!): String!
+
+  # Cancel a stripe subscription returns its stripeSubscriptionId
+  cancelStripeSubscription(stripeSubscriptionId: String!): String!
+
+  # Create a new fan activity
+  addActivity(input: FanActivityInput!): FanActivity!
+
+  # Create new fan activities
+  addActivities(input: FanActivitiesInput!): FanActivities!
+
+  # Delete fan activity
+  deleteActivity(id: ID!): FanActivity!
+
+  # Create a stripe subscription
+  createStripeSubscriptionViaPS(
+    # Stripe paymentMethod Id
+    paymentMethodId: String!
+
+    # Payment offer Id
+    paymentOfferId: ID!
+
+    # Stripe coupon id
+    couponId: String
+  ): StripeSubscriptionEvent
+
+  # Cancel a stripe subscription
+  cancelStripeSubscriptionViaPS(
+    # Stripe subscription Id
+    stripeSubscriptionId: String!
+  ): StripeSubscriptionEvent!
+
+  # Create a stripe checkout session
+  createStripeCheckoutSession(
+    # Payment offer Id
+    paymentOfferId: String!
+
+    # Return url in case of payment success
+    successUrl: String!
+
+    # Return url in case of payment error
+    cancelUrl: String!
+  ): StripeCheckoutSession!
+}
+
+# Available errors constants
+enum ErrorType {
+  IsRequired
+  BadValue
+  AlreadyExists
+  BadConfirmation
+}
+
+# Base type for errors in models.
+# Define all possible values that could be returned by the server during a validation process.
+# Note : the following may change during the development according to the constraints we will meet.
+type ModelErrors {
+  # Possible values :
+  # - IsRequired: username is mandatory for signup
+  username: ErrorType
+
+  # Possible values :
+  # - IsRequired: email is mandatory for signup
+  # - BadValue: in case of bad format or trash mail address
+  # - AlreadyExists: if the email already exists in database
+  email: ErrorType
+
+  # Possible values :
+  # - IsRequired: accountKey must be provided in the headers
+  accountKey: ErrorType
+
+  # Possible values :
+  # - IsRequired: password is mandatory for signup
+  # - BadConfirmation: passwordConfirmation is not correct
+  password: ErrorType
+
+  # Possible values :
+  # - BadValue: status must be either 'active' or 'inactive'
+  status: ErrorType
+
+  # Possible values :
+  # - AlreadyExists: if a like or bookmark already exists for the same resource
+  activityType: ErrorType
+}
+
+# Cursor for pagination.
+type PaginationCursor {
+  # Cursor to be used when requesting elements before it
+  before: String
+
+  # Cursor to be used when requesting elements after it
+  after: String
+}
+
+# JSON type
+type JSONType {
+  object: RawObject
+}
+
+# Attributes for an image
+type Image {
+  url: String
+  description: String
+  width: Int
+  height: Int
+}
+
+# File type
+type File {
+  # Name of the file.
+  name: String!
+
+  # Description of the file.
+  description: String
+
+  # Url of the file.
+  url: String
+
+  # File type
+  type: String
+}
+
+# Input type for contact.
+input ContactInput {
+  email: String!
+  subject: String!
+  message: String!
+}
+
+type ContactOutput {
+  res: String
+}
+
+# Define a type for a paginated list of videos
+type Videos {
+  items: [Video]
+  cursor: PaginationCursor!
+}
+
+# Video type is the link to the event's video.
+type Video {
+  id: ID!
+
+  # Name of the video.
+  name: String!
+
+  # Description of the video.
+  description: String
+
+  # Url of the file.
+  url: String
+
+  # Url of an image.
+  poster: String
+
+  # Url of an image for mobile devices.
+  mobilePoster: String
+
+  # Url for sharing the video - this is a computed property
+  getShareUrl: String
+
+  # Video duration
+  duration: Float
+
+  # Vendor's name
+  vendorName: String
+
+  # Vendor's video id in case of specific data provider
+  vendorVideoId: String
+
+  # Date for the publication of the video
+  publicationDate: String
+
+  # List of tags
+  Tags: [Tag]
+
+  # Return the associated event
+  Event: Event
+
+  # Payments offers attached to the video
+  PaymentOffers: [PaymentOffer]
+
+  # Products attached to the video
+  ItemProducts: [ItemProduct]
+
+  # Is paid flag
+  isPaid: Boolean
+}
+
+# VideoAccess type contains url to the video and the associated event if the Fan can access.
+type VideoAccess {
+  # Url of the file.
+  url: String
+
+  # Video Id in vendor system
+  vendorVideoId: String
+
+  # Return the associated event
+  Event: Event
+}
+
+# Define a type for a paginated list of news
+type PNews {
+  items: [News]
+  cursor: PaginationCursor!
+}
+
+# Define the type for representing a news.
+type News {
+  # Id of the section to be used against the cms provider
+  codename: String
+
+  # Title of the news
+  title: String
+
+  # Subtitle of the news
+  subtitle: String
+
+  # Description of the news
+  description: String
+
+  # Keywords of the news
+  keywords: [String]
+
+  # Lang of the news
+  lang: String
+
+  # Date of the news
+  publicationDate: String
+
+  # Author of the news
+  author: String
+
+  # Category of the news
+  category: String
+
+  # Url of the news on the customer's website
+  articleUrl: String
+
+  # Image to be used as a cover ; either a portrait or a landscape version
+  cover: ArticleCover
+
+  # Items that compose the news
+  items: [ArticleSection]
+}
+
+# Define the type for representing a cover image.
+type ArticleCover {
+  # Url for the landscape version
+  landscapeImage: Image
+
+  # Url for the portrait version
+  portraitImage: Image
+}
+
+# Define the type for representing a gallery of images to be used in the article.
+type ArticleGallery {
+  # List of urls
+  images: [Image]
+
+  # Define the type of the section
+  type: ArticleSectionType
+}
+
+# Define the type for representing an ad banner to be used in the article.
+type ArticleBanner {
+  # Url for the ad
+  url: String
+
+  # url for the banner
+  image: Image
+
+  # Define the type of the section
+  type: ArticleSectionType
+}
+
+# Define the type for representing an ad url to be used in the article.
+type ArticleAd {
+  # Url for the ad server
+  url: String
+
+  # Define the type of the section
+  type: ArticleSectionType
+}
+
+# Define the type for representing an onrewind video to be used in the article.
+type ArticleVideo {
+  # Onrewind id for the video
+  onrewindId: ID!
+
+  # Url for the video
+  url: String
+
+  # Placeholder for the video
+  image: Image
+
+  # Define the type of the section
+  type: ArticleSectionType
+}
+
+# Define the type for representing an onrewind event to be used in the article.
+type ArticleEvent {
+  # Onrewind id for the event
+  onrewindId: ID!
+
+  # Embedded html that links to the player
+  content: String
+
+  # Define the type of the section
+  type: ArticleSectionType
+}
+
+# Define the type for representing a text part of the article.
+type ArticleText {
+  # Html content
+  content: String
+
+  # Define the type of the section
+  type: ArticleSectionType
+}
+
+# Define the type for representing a title part of the article.
+type ArticleTitle {
+  # Text content
+  content: String
+
+  # Define the type of the section
+  type: ArticleSectionType
+}
+
+enum ArticleSectionType {
+  article_gallery
+  article_banner
+  article_ad
+  article_video
+  article_event
+  article_text
+  article_title
+}
+
+# Define the type for representing a section of the article.
+union ArticleSection =
+    ArticleGallery
+  | ArticleBanner
+  | ArticleAd
+  | ArticleVideo
+  | ArticleEvent
+  | ArticleText
+  | ArticleTitle
+
+# Define a type for a paginated list of teams
+type Teams {
+  items: [Team]
+  cursor: PaginationCursor!
+}
+
+# Team type represents one of the challengers.
+type Team {
+  id: ID!
+
+  # Name of the challenger.
+  name: String!
+
+  # ShortName of the challenger.
+  shortName: String
+
+  # Url to an image representing the challenger.
+  picture: String @deprecated(reason: "Use pictureUrl")
+
+  # Url to an image representing the challenger.
+  pictureUrl: String
+
+  # Url to an image for the jersey.
+  jerseyPicture: String
+
+  # Division of the team
+  role: String
+
+  # Name of the coach
+  coachName: String
+
+  # Home stadium
+  homeFieldName: String
+
+  # Club history
+  history: String
+
+  # Color representing the team
+  color: String
+
+  # Cover image
+  covers: String
+
+  # Social networks and urls like website, facebook profile, instagram profile, twitter account,...
+  social: RawObject
+
+  # List of tags
+  Tags: [Tag]
+
+  # Return the squads associated to the team, we can filter by season
+  getSquads(
+    # Season Id
+    SeasonId: ID
+  ): [Squad]
+
+  # Return a paginated list of videos by creation date.
+  getLatestVideos(
+    # Number of videos required
+    limit: Int = 10
+
+    # State of videos for filtering
+    state: EventState
+
+    # State of videos for filtering
+    visibility: Visibility
+
+    # Cursor to be used in order to fetch videos before it
+    before: String
+
+    # Cursor to be used in order to fetch videos after it
+    after: String
+  ): Videos!
+}
+
+# Snapshot of a team for a specific event
+type EventTeam {
+  id: ID!
+
+  # Name of the challenger.
+  name: String!
+
+  # ShortName of the challenger.
+  shortName: String
+
+  # Url to an image representing the challenger.
+  picture: String @deprecated(reason: "Use pictureUrl")
+
+  # Url to an image representing the challenger.
+  pictureUrl: String
+
+  # Url to an image for the jersey.
+  jerseyPicture: String
+
+  # Division of the team
+  role: String
+
+  # Name of the coach
+  coachName: String
+
+  # Home stadium
+  homeFieldName: String
+
+  # Teammates selected for the event
+  teammates: [EventTeammate]
+}
+
+input TeamFilterInput {
+  id: ID
+  name: String
+}
+
+# Define a type for a paginated list of teammates
+type Teammates {
+  items: [Teammate]
+  cursor: PaginationCursor!
+}
+
+# Teammate type are part of team
+type Teammate {
+  id: ID!
+  name: String!
+  country: String
+  picture: String
+
+  # Url to an image for the jersey.
+  jerseyPicture: String
+
+  # Role in the team
+  role: String
+
+  # Birth Date
+  birthday: String
+  TeamId: ID
+
+  # Return the squads associated to the teammate, we can filter by season
+  getSquads(
+    # Season Id
+    SeasonId: ID
+  ): [Squad]
+}
+
+# Snapshot of a teammate for a specific event
+type EventTeammate {
+  id: ID!
+  name: String!
+  country: String
+  picture: String
+
+  # Url to an image for the jersey.
+  jerseyPicture: String
+
+  # Role in the team
+  role: String
+}
+
+# Placeholder type represents a text or an image that may be displayed to the viewer.
+type Placeholder {
+  # Text to be displayed
+  text: String
+
+  # Poster image name
+  poster: String
+
+  # Poster image url
+  url: String
+}
+
+enum EventState {
+  liveDailymotion
+  liveOn
+  liveOff
+  replay
+}
+
+enum EventLiveStatus {
+  isPast
+  isLive
+  isFuture
+}
+
+enum Visibility {
+  private
+  public
+}
+
+type TeamStats {
+  team: EventTeam
+  possession: Int
+  yellowCards: Int
+  redCards: Int
+  goals: Int
+  goalsConceded: Int
+  ownGoals: Int
+  shots: Int
+  shotsOnTarget: Int
+  saves: Int
+}
+
+type EventStats {
+  homeTeam: TeamStats
+  awayTeam: TeamStats
+}
+
+# Define a type for a paginated list of events
+type Events {
+  items: [Event]
+  cursor: PaginationCursor!
+}
+
+# Define the type for a stream
+enum StreamType {
+  main
+  additionnal
+  backup
+}
+
+# Define a stream for a event
+type Stream {
+  id: ID!
+  streamType: StreamType!
+  name: String
+  url: String
+  key: String
+  startedAt: String
+}
+
+# Event type represent a game between 2 challengers
+type Event {
+  id: ID!
+
+  # Name of the event
+  name: String!
+
+  # Description of the event
+  description: String
+
+  # Location of the event
+  location: String
+
+  # Name of the referee
+  refereeName: String
+
+  # state of the event
+  state: EventState
+
+  # The Placeholder containing even the text ot the image to be displayed to the viewer.
+  placeholder: Placeholder
+
+  # Beginning of the event
+  startDate: String
+
+  # End of the event
+  endDate: String
+
+  # Url of the event to be used when sharing on social networks
+  shareUrl: String
+
+  # Is the event currently live
+  getLiveStatus: EventLiveStatus
+
+  # visibility of the event
+  visibility: Visibility
+
+  # stats of the event
+  stats: EventStats
+
+  # Associated plans/products
+  pricingPlans: [String]
+
+  # The 2 challengers for this event
+  Challengers: [Team!]!
+
+  # List of streams
+  Streams: [Stream]
+
+  # The video for this event
+  Video: Video
+
+  # Id of the associated video
+  VideoId: String
+
+  # List of markers
+  Markers: [Marker]
+
+  # List of tags
+  Tags: [Tag]
+
+  # List of attachments
+  EventAttachments: [EventAttachment]
+
+  # Score
+  score: RawObject
+
+  # Payments offers attached to the event
+  PaymentOffers: [PaymentOffer]
+
+  # Products attached to the event
+  ItemProducts: [ItemProduct]
+
+  # Is paid flag
+  isPaid: Boolean
+
+  # ID of the associated round
+  RoundId: ID
+
+  # Nested query to get the associated round
+  Round: Round
+
+  # Nested query to get the associated video
+  getVideo: Video
+
+  # true if the current user has paid for the event
+  hasPaid: Boolean
+
+  # Nested query for the list of tags
+  getTags: [Tag]
+
+  # Nested query to get the embbeded code
+  getEmbeddedCode(
+    width: Int = 600
+    height: Int = 450
+    mute: Boolean = false
+    autoplay: Boolean = true
+  ): String
+
+  # Is Match Center is available for this game true/false
+  isMatchCenterAvailable: Boolean
+}
+
+type Marker {
+  id: ID!
+  startTime: Float!
+  endTime: Float!
+  description: String
+  dailymotionRepostId: String
+  notifications: [Int]
+  shouldDisplayChallengerProfile: Boolean
+  facebookVideoId: String
+  MarkerTypeId: ID
+  ParentId: ID
+  ChallengerId: ID
+}
+
+input EventFilterInput {
+  id: ID
+  name: String
+  description: String
+  state: EventState
+  visibility: Visibility
+}
+
+# EventAccess type contains all needed info to play the event
+type EventAccess {
+  # Streams
+  Streams: [Stream]
+}
+
+# Event attacment
+type EventAttachment {
+  id: ID!
+  name: String!
+  type: String
+  fileName: String
+  ext: String
+  url: String!
+}
+
+# Access token at login process.
+type AccessToken {
+  # user's id in database
+  id: ID!
+
+  # Access token to be used in the next queries.
+  # It must be passed in the authorization header
+  # 'authorization': 'Bearer <my token>'
+  accessToken: String!
+
+  # Refresh token to be used to renew the access token using the mutation
+  # - refreshToken(refreshToken:)
+  refreshToken: String!
+
+  # Type of the token : 'Bearer'
+  tokenType: String!
+
+  # Time in s before the token expires
+  expiresIn: Int!
+}
+
+# Access token and meta data provided by a vendor for SSO process.
+type VendorAccessToken {
+  # Access token to be used in the next connection steps of the SSO process
+  accessToken: String
+
+  # additional meta data
+  meta: RawObject
+}
+
+# Input type for login.
+input LoginInput {
+  # User's email
+  email: String
+
+  # User's password
+  password: String
+
+  # Access token given when user was authenticated with its facebook account
+  facebookAccessToken: String
+
+  # Token id given when user was authenticated with its google account
+  googleTokenId: String
+
+  # Vendor SSO
+  vendorSSO: vendorSSO
+}
+
+input vendorSSO {
+  # Vendor name
+  name: String
+
+  # Access token provided by the vendor
+  token: String
+
+  # String representing a set of meta data to be used alongside with the token for the login
+  tokenMeta: String
+}
+
+# Fan type
+type Fan {
+  # id in database
+  id: ID!
+
+  # username
+  username: String
+
+  # email
+  email: String!
+
+  # firstname
+  firstname: String
+
+  # lastname
+  lastname: String
+
+  # Possible values are :
+  # - male
+  # - female
+  gender: String
+
+  # birth year
+  birthYear: String
+
+  # birthdate
+  birthdate: String
+
+  # country
+  country: String
+
+  # address
+  address: String
+
+  # phone number
+  phone: String
+
+  # image url
+  imageUrl: String
+
+  # Identify if the user is active or not.
+  # User is inactive by default until he clicks the link he receives by email when signin up.
+  # Possible values are :
+  # - active
+  # - inactive
+  status: String!
+
+  # preferred language
+  preferredLanguage: String
+  meta: FanMeta
+
+  # Return the activities for the fan
+  getActivities(type: ActivityType, resourceType: ResourceType): FanActivities!
+
+  # List of subscriptions
+  getActiveSubscriptions: [FanSubscription]
+
+  # Products attached to the fan
+  getFanProducts(
+    limit: Int
+    before: String
+    after: String
+    status: String
+  ): FanProducts
+
+  # Return an access token in case of signup
+  authToken: AccessToken
+
+  # The token to be used when confirming the account
+  confirmationToken: String
+
+  # The token to be used when reseting the password
+  resetPasswordToken: String
+
+  # Object used to configure google analytics
+  tracker: RawObject
+
+  # Fan's associated tags
+  Tags: [Tag]
+}
+
+# FanSubscription type
+type FanSubscription {
+  # OnRewind payment offer ID used to subscribe
+  paymentOfferId: ID
+
+  # Stripe / Apple subscription ID
+  subscriptionId: String
+
+  # Stripe / Apple plan Id
+  planId: String
+
+  # Period start date
+  periodStartDate: Int
+
+  # Period end date
+  periodEndDate: Int
+
+  # Has the subscription been cancelled ?
+  cancelled: Boolean
+}
+
+type StripeSubscriptionStatus {
+  # Subscription status
+  status: String
+
+  # Message returned by Stripe (in case of error)
+  message: String
+
+  # Stripe payment intent secret key (required for 2 steps validation)
+  secret: String
+}
+
+# FanMeta type
+type FanMeta {
+  notifications: FanMetaNotifications
+  payment: FanMetaPayment
+  population: FanMetaPopulation
+}
+
+# FanMetaNotificationsEvents enum
+enum FanMetaNotificationsEvents {
+  kickOff
+  goals
+  endScores
+}
+
+# FanMetaNotificationsGeneral enum
+enum FanMetaNotificationsGeneral {
+  generalInfo
+  liveEvents
+  socialNetworks
+}
+
+# FanMetaNotifications type
+type FanMetaNotifications {
+  general: [FanMetaNotificationsGeneral]
+  favoriteTeams: [FanMetaNotificationsFavoriteTeams]
+  favoriteCompetitions: [FanMetaNotificationsFavoriteCompetitions]
+  events: [FanMetaNotificationsEvents]
+}
+
+# FanMetaNotificationsFavoriteTeams type
+type FanMetaNotificationsFavoriteTeams {
+  id: ID!
+  events: [FanMetaNotificationsEvents]
+  getTeam: Team
+}
+
+# FanMetaNotificationsFavoriteCompetitions type
+type FanMetaNotificationsFavoriteCompetitions {
+  id: ID!
+  events: [FanMetaNotificationsEvents]
+  getCompetition: Competition
+}
+
+# FanMetaPayment type
+type FanMetaPayment {
+  # Stripe's sessions completed by the fan
+  sessions: [String]
+
+  # Apple's transactions completed by the fan
+  apple: [FanMetaPaymentAppleOrder]
+}
+
+type FanMetaPaymentAppleOrder {
+  # ID of the transaction
+  transactionIdentifier: String!
+
+  # Receipt of the transaction
+  transactionReceipt: String!
+
+  # ID of the plan or product
+  productIdentifier: String!
+}
+
+type FanMetaPopulation {
+  # Population start date
+  startDate: String
+
+  # Population end date
+  endDate: String
+}
+
+# Input type for FanMetaNotificationsFavoritesTeamOrCompetitionInput
+input FanMetaNotificationsFavoriteInput {
+  id: ID!
+  events: [FanMetaNotificationsEvents]
+}
+
+# Input type for FanMetaNotifications
+input FanMetaNotificationsInput {
+  favoriteTeams: [FanMetaNotificationsFavoriteInput]
+  favoriteCompetitions: [FanMetaNotificationsFavoriteInput]
+  general: [FanMetaNotificationsGeneral]
+  events: [FanMetaNotificationsEvents]
+}
+
+# Input type for FanMeta
+input FanMetaInput {
+  oneSignalSessionId: String
+  notifications: FanMetaNotificationsInput
+}
+
+# Input for addAppleOrder mutation
+input FanMetaPaymentAppleOrderInput {
+  # ID of the transaction
+  transactionIdentifier: String!
+
+  # Receipt of the transaction
+  transactionReceipt: String!
+
+  # ID of the plan or product
+  productIdentifier: String!
+}
+
+# Input type for creating or updating users
+input FanInput {
+  id: ID
+  email: String
+  username: String
+  firstname: String
+  lastname: String
+  gender: String
+  birthYear: String
+  country: String
+  phone: String
+  imageUrl: String
+  status: String
+  password: String
+  preferredLanguage: String
+  passwordConfirmation: String
+  meta: FanMetaInput
+}
+
+# Input type for reseting password
+input ResetPasswordInput {
+  resetPasswordToken: String!
+  password: String!
+  passwordConfirmation: String!
+}
+
+# FanActivity type
+enum ActivityType {
+  watch
+  bookmark
+  like
+}
+
+enum ResourceType {
+  event
+  article
+  video
+  challenger
+  team
+  teammate
+  marker
+  tag
+}
+
+union FanActivityResourceResponse = Event | Video | Team | Teammate | Tag
+
+type FanActivity {
+  # id in database
+  id: ID!
+
+  # activity type
+  type: ActivityType!
+
+  # Type of the resource to record the activity
+  resourceType: ResourceType!
+
+  # Id of the resource to record the activity
+  resourceId: ID!
+
+  # Nested resource
+  getResource: FanActivityResourceResponse
+
+  # Date of creation
+  createdAt: String
+
+  # Date of update (activities cannot be updated so it will be equal to createdAt attribute)
+  updatedAt: String
+}
+
+# Define a type for a paginated list of fan activities
+type FanActivities {
+  items: [FanActivity]
+  cursor: PaginationCursor!
+}
+
+# Input type for creating fan activity
+input FanActivityInput {
+  type: ActivityType!
+  resourceType: ResourceType!
+  resourceId: ID!
+}
+
+# Input type for creating a list of fan activities
+input FanActivitiesInput {
+  type: ActivityType!
+  resourceType: ResourceType!
+  resourceIds: [ID]!
+}
+
+# Define a type for a paginated list of seasons
+type Seasons {
+  items: [Season]
+  cursor: PaginationCursor!
+}
+
+# Season type represents one of the challengers.
+type Season {
+  id: ID
+
+  # Name of the season.
+  name: String
+
+  # StartDate of the season.
+  startDate: String
+
+  # EndDate of the season.
+  endDate: String
+
+  # List of tags
+  Tags: [Tag]
+}
+
+# Define a type for a paginated list of competitions
+type Competitions {
+  items: [Competition]
+  cursor: PaginationCursor!
+}
+
+# Competition type represents.
+type Competition {
+  id: ID!
+
+  # Name of the competition.
+  name: String!
+
+  # Slug of the competition.
+  slug: String!
+
+  # Display order in the list of competition.
+  displayOrder: Int
+
+  # List of tags
+  Tags: [Tag]
+}
+
+# Define a type for a paginated list of rounds
+type Rounds {
+  items: [Round]
+  cursor: PaginationCursor!
+}
+
+# Round type represents one of the challengers.
+type Round {
+  id: ID!
+
+  # Name of the round.
+  name: String!
+
+  # Short Name
+  shortName: String
+
+  # Position of the round in the competition
+  competitionOrder: Int
+
+  # ID of the competition
+  CompetitionId: ID!
+
+  # ID of the season
+  SeasonId: ID!
+
+  # Current Round
+  current: Boolean
+
+  # Associated events
+  Events: [Event]
+
+  # Refresh associated events
+  getEvents(limit: Int = 10): Events
+    @deprecated(reason: "Use Events array instead")
+
+  # List of tags
+  Tags: [Tag]
+}
+
+# Specific squad of a team for a season
+type Squad {
+  id: ID @deprecated(reason: "do not use")
+
+  # Name of the squad.
+  name: String @deprecated(reason: "use name from model Team or Teammate")
+  Team: Team @deprecated(reason: "use getTeam instead")
+
+  # Team Logo
+  logo: String @deprecated(reason: "use pictureUrl from model Team")
+
+  # Id of the season
+  SeasonId: ID!
+
+  # Return the associated season
+  getSeason: Season
+
+  # Id of the team
+  TeamId: ID!
+
+  # Id of the teammate
+  TeammateId: ID!
+
+  # Return the associated team
+  getTeam: Team
+
+  # Return the teammate
+  getTeammate: Teammate
+
+  # Player's meta data
+  meta: RawObject
+
+  # Player's picture
+  pictureUrl: String
+
+  # Id of the PlayerRole
+  PlayerRoleId: ID
+
+  # Return PlayersRole
+  getPlayerRole: PlayerRole
+}
+
+# Stats type represents the stats requested.
+type Stats {
+  result: RawObject
+}
+
+enum PaymentOfferType {
+  sku
+  plan
+}
+
+# Define a type for a paginated list of paymentOffers
+type PaymentOffers {
+  items: [PaymentOffer]
+  cursor: PaginationCursor!
+}
+
+# PaymentOffer type represents one of the challengers.
+type PaymentOffer {
+  id: ID!
+
+  # Type is either plan for subscriptions or sku for one time payments
+  paymentOfferType: PaymentOfferType
+
+  # Name of the OR payment offer
+  name: String
+
+  # Name of the Stripe offer
+  stripeName: String
+
+  # offer reference for stripe
+  stripeId: String
+
+  # offer reference for apple
+  appleId: String
+
+  # Price in cents ; ex: 999 => 9,99$
+  price: Int
+
+  # Currency ; ex 'eur'
+  currency: String
+
+  # Billing interval
+  interval: String
+
+  # Trial period duration in days
+  trialPeriodDays: Int
+
+  # Tags in which the payment offer is attached
+  Tags: [Tag]
+}
+
+# Stripe coupon type
+type StripeCoupon {
+  id: String
+  name: String
+  amountOff: String
+  currency: String
+  percentOff: String
+  duration: String
+  durationInMonths: String
+  meta: RawObject
+  error: String
+}
+
+# Define a type for a paginated list of clips
+type Clips {
+  items: [Clip]
+  cursor: PaginationCursor!
+}
+
+# Clip type represent an extract of an event
+type Clip {
+  id: ID!
+
+  # Name of the clip
+  name: String!
+
+  # Url of the clip
+  url: String
+
+  # Url of the clip to be used when sharing on social networks
+  shareUrl: String
+
+  # List of tags
+  Tags: [Tag]
+
+  # Id of the event
+  EventId: ID!
+
+  # Url of the thumbnail
+  poster: String
+
+  # Return the associated event
+  Event: Event
+}
+
+# Define a type for a paginated list of tags
+type Tags {
+  items: [Tag]
+  cursor: PaginationCursor!
+}
+
+# Define a tag
+type Tag {
+  id: ID!
+  tagType: String
+  name: String!
+
+  # Contains the list of images that can be used as placeholder to display the tag
+  placeholders: [String]
+
+  # Contain the payment offers associated to this tag
+  PaymentOffers: [PaymentOffer]
+}
+
+# Specific squad of a team for a season
+type PlayerRole {
+  id: ID!
+
+  # Name of the role.
+  name: String
+}
+
+enum StatsTypesType {
+  team
+  teammate
+}
+
+# StatsTypes type
+type StatsTypes {
+  items: [StatsType]
+  cursor: PaginationCursor!
+}
+
+# Stats type
+type StatsType {
+  id: ID!
+
+  # Name of the role.
+  name: String
+
+  # Type of stats (team, teammate, etc.)
+  type: String
+}
+
+# Page type
+type Page {
+  # Type of the page
+  type: String
+
+  # Id of the page to be used against the cms provider
+  codename: String
+
+  # Specific parameters
+  params: PageParams
+
+  # Different section that compose the page
+  items: [PageSection]
+}
+
+type PageSection {
+  # Section codename
+  sectionCodename: String
+
+  # Section type
+  sectionType: String
+}
+
+# Page params may be either PageVerticalLayoutParams or another page layout params (which will be defined later)
+union PageParams = PageVerticalLayoutParams
+
+type PageVerticalLayoutParams {
+  # Title of the page
+  title: String
+
+  # Meta data
+  meta: RawObject
+}
+
+# PageSectionItem may be either a PageSectionItemVideo or a PageSectionItemImage or a PageSectionItemEvent or a PageSectionItemArticle
+union PageSectionItem =
+    PageSectionItemVideo
+  | PageSectionItemImage
+  | PageSectionItemEvent
+  | PageSectionItemArticle
+  | PageSectionItemFile
+
+enum PageSectionItemType {
+  video
+  event
+  image
+  article
+  file
+}
+
+type PageSectionItemVideo {
+  _id: String
+  item: Video
+  type: PageSectionItemType
+  meta: RawObject
+}
+
+type PageSectionItemEvent {
+  _id: String
+  item: Event
+  type: PageSectionItemType
+  meta: RawObject
+}
+
+type PageSectionItemImage {
+  _id: String
+  item: Image
+  type: PageSectionItemType
+}
+
+type PageSectionItemArticle {
+  _id: String
+  item: News
+  type: PageSectionItemType
+  meta: RawObject
+}
+
+type PageSectionItemFile {
+  _id: String
+  item: File
+  type: PageSectionItemType
+  meta: RawObject
+}
+
+# PageSectionDynamic type
+type PageSectionDynamic {
+  # Type of the section
+  type: String
+
+  # Id of the section to be used against the cms provider
+  codename: String
+
+  # Specific parameters
+  params: PageSectionDynamicParams
+
+  # The items to be displayed in this section
+  items: [PageSectionItem]
+
+  # Cursors to be used in order to fetch items before or after it
+  cursor: PaginationCursor!
+}
+
+# Section params may be either PageSectionDynamicGridParams or PageSectionDynamicCarouselParams or PageSectionDynamicSliderParams
+union PageSectionDynamicParams =
+    PageSectionDynamicGridParams
+  | PageSectionDynamicCarouselParams
+  | PageSectionDynamicSliderParams
+
+type PageSectionDynamicGridParams {
+  # Title of the section
+  title: String
+
+  # Types of items displayed in the section : Event or Video
+  itemsType: PageSectionItemsType!
+
+  # Base filters (tags) to be used for this section
+  sectionFilters: [PageSectionFilters]
+
+  # Additional filters to be used for this section
+  additionalFilters: [PageSectionFilters]
+
+  # Number of items
+  numberOfItems: Int
+
+  # Button type
+  buttonType: String
+
+  # Button (View all) - Redirection
+  buttonRedirect: String
+}
+
+type PageSectionDynamicCarouselParams {
+  # Title of the section
+  title: String
+
+  # Types of items displayed in the section : Event or Video
+  itemsType: PageSectionItemsType!
+
+  # Base filters (tags) to be used for this section
+  sectionFilters: [PageSectionFilters]
+
+  # Items orientation: landscape or portrait
+  itemsDisplayType: PageSectionItemsDisplayType
+
+  # Page reached after clicking the show more button
+  buttonRedirect: String
+}
+
+type PageSectionDynamicSliderParams {
+  # Title of the section
+  title: String
+
+  # Types of items displayed in the section : Event or Video
+  itemsType: PageSectionItemsType!
+
+  # Base filters (tags) to be used for this section
+  sectionFilters: [PageSectionFilters]
+}
+
+# PageSectionStatic type
+type PageSectionStatic {
+  # Type of the section
+  type: String
+
+  # Id of the section to be used against the cms provider
+  codename: String
+
+  # Specific parameters
+  params: PageSectionStaticParams
+
+  # The items to be displayed in this section
+  items: [PageSectionItem]
+}
+
+# PageSectionStaticParams may be either PageSectionStaticGridParams or PageSectionStaticCarouselParams or PageSectionStaticSliderParams or PageSectionStaticAdParams
+union PageSectionStaticParams =
+    PageSectionStaticGridParams
+  | PageSectionStaticCarouselParams
+  | PageSectionStaticSliderParams
+  | PageSectionStaticAccordionParams
+  | PageSectionStaticAdParams
+  | PageSectionStaticListParams
+
+type PageSectionStaticGridParams {
+  # Title of the section
+  title: String
+}
+
+type PageSectionStaticCarouselParams {
+  # Title of the section
+  title: String
+
+  # Items orientation: landscape or portrait
+  itemsDisplayType: PageSectionItemsDisplayType
+
+  # Page reached after clicking the show more button
+  buttonRedirection: String
+}
+
+type PageSectionStaticSliderParams {
+  # Title of the section
+  title: String
+
+  # Display ratio
+  ratio: String
+}
+
+type PageSectionStaticAccordionParams {
+  # Title of the section
+  title: String
+
+  # Display ratio
+  ratio: String
+}
+
+type PageSectionStaticAdParams {
+  # Title of the section
+  title: String
+
+  # Redirection URL
+  redirectionUrl: String
+}
+
+type PageSectionStaticListParams {
+  # Title of the section
+  title: String
+}
+
+type PageSectionFilters {
+  type: String
+  displayValue: String
+  name: String
+}
+
+input InputPageSectionFilters {
+  type: String
+  displayValue: String
+  name: String
+}
+
+enum PageSectionItemsDisplayType {
+  landscape
+  portrait
+}
+
+enum PageSectionItemsType {
+  event
+  video
+}
+
+# CMS Page type
+type CMSPage {
+  # Type of the page
+  type: String
+
+  # Id of the page to be used against the cms provider
+  codename: String
+
+  # Specific parameters
+  params: CMSPageParams
+
+  # Sections that compose the page
+  items: [CMSPageSection]
+}
+
+type CMSPageSection {
+  # Section codename
+  sectionCodename: String
+
+  # Section type
+  sectionType: String
+
+  # Section ratio (narrow, normal, wide)
+  sectionRatio: String
+
+  # Section items display type (portrait, landscape)
+  sectionItemsDisplayType: String
+
+  # Section number of items
+  sectionNumberOfItems: String
+
+  # Section number of additionnal filters
+  sectionNumberOfAdditionalFilters: String
+}
+
+# CMS Page params
+union CMSPageParams = CMSPageVerticalLayoutParams
+
+type CMSPageVerticalLayoutParams {
+  # Title of the page
+  title: String
+
+  # Meta data
+  meta: CMSPageMetadata
+}
+
+# CMS Page metadata
+type CMSPageMetadata {
+  # Meta: Title
+  title: String
+
+  # Meta: Description
+  description: String
+
+  # Meta: Image
+  image: Image
+}
+
+# CMSSectionStatic type
+type CMSSectionStatic {
+  # Type of the section
+  type: String
+
+  # Id of the section to be used against the cms provider
+  codename: String
+
+  # Specific parameters
+  params: CMSSectionStaticParams
+
+  # The items to be displayed in this section
+  items: [CMSSectionItem]
+}
+
+# CMSSectionStaticParams
+union CMSSectionStaticParams =
+    CMSSectionStaticAdParams
+  | CMSSectionStaticCustomParams
+  | CMSSectionStaticSliderParams
+  | CMSSectionStaticGridParams
+  | CMSSectionStaticCarouselParams
+  | CMSSectionStaticAccordionParams
+  | CMSSectionStaticListParams
+
+type CMSSectionStaticAdParams {
+  # Title of the section
+  title: String
+
+  # Display ratio
+  ratio: String
+
+  # Redirection URL
+  redirectionUrl: String
+}
+
+type CMSSectionStaticCustomParams {
+  # Title of the section
+  title: String
+}
+
+type CMSSectionStaticSliderParams {
+  # Title of the section
+  title: String
+
+  # Display ratio
+  ratio: String
+}
+
+type CMSSectionStaticGridParams {
+  # Title of the section
+  title: String
+}
+
+type CMSSectionStaticCarouselParams {
+  # Title of the section
+  title: String
+
+  # Items orientation: landscape or portrait
+  itemsDisplayType: CMSSectionItemsDisplayType
+
+  # Page reached after clicking the show more button
+  buttonRedirection: String
+}
+
+type CMSSectionStaticAccordionParams {
+  # Title of the section
+  title: String
+
+  # Display ratio
+  ratio: String
+}
+
+type CMSSectionStaticListParams {
+  # Title of the section
+  title: String
+}
+
+# CMSSectionDynamic type
+type CMSSectionDynamic {
+  # Type of the section
+  type: String
+
+  # Id of the section to be used against the cms provider
+  codename: String
+
+  # Specific parameters
+  params: CMSSectionDynamicParams
+
+  # The items to be displayed in this section
+  items: [CMSSectionItem]
+
+  # Cursors to be used in order to fetch items before or after it
+  cursor: PaginationCursor!
+}
+
+# CMSSectionDynamicParams
+union CMSSectionDynamicParams = CMSSectionDynamicGridParams
+
+type CMSSectionDynamicGridParams {
+  # Title of the section
+  title: String
+
+  # Types of items displayed in the section : Event or Video
+  itemsType: CMSSectionItemType!
+
+  # Base filters (tags) to be used for this section
+  sectionFilters: [CMSSectionFilters]
+
+  # Additional filters to be used for this section
+  additionalFilters: [CMSSectionFilters]
+
+  # Number of items
+  numberOfItems: Int
+
+  # Button type
+  buttonType: String
+
+  # Button (View all) - Redirection
+  buttonRedirect: String
+}
+
+type CMSSectionFilters {
+  type: String
+  displayValue: String
+  name: String
+}
+
+input InputCMSSectionFilters {
+  type: String
+  displayValue: String
+  name: String
+}
+
+# CMSSectionCustom type
+type CMSSectionCustom {
+  # Type of the section
+  type: String
+
+  # Id of the section to be used against the cms provider
+  codename: String
+
+  # Specific parameters
+  params: CMSSectionCustomParams
+}
+
+# CMSSectionCustomParams
+union CMSSectionCustomParams =
+    CMSSectionCustomTitleParams
+  | CMSSectionCustomTextParams
+
+type CMSSectionCustomTitleParams {
+  # Title text
+  text: String
+
+  # Title size
+  size: String
+
+  # Title horizontal position
+  horizontalPosition: String
+}
+
+type CMSSectionCustomTextParams {
+  # Title text
+  text: String
+}
+
+# CMSSectionItem
+union CMSSectionItem =
+    CMSSectionItemImage
+  | CMSSectionItemFile
+  | CMSSectionItemVideo
+  | CMSSectionItemEvent
+
+type CMSSectionItemImage {
+  _id: String
+  item: Image
+  type: CMSSectionItemType
+}
+
+type CMSSectionItemFile {
+  _id: String
+  item: File
+  type: CMSSectionItemType
+  meta: RawObject
+}
+
+type CMSSectionItemVideo {
+  _id: String
+  item: Video
+  type: CMSSectionItemType
+  meta: RawObject
+}
+
+type CMSSectionItemEvent {
+  _id: String
+  item: Event
+  type: CMSSectionItemType
+  meta: RawObject
+}
+
+enum CMSSectionItemType {
+  video
+  event
+  image
+  file
+}
+
+enum CMSSectionItemsDisplayType {
+  landscape
+  portrait
+}
+
+# List of product (paginated) type
+type Products {
+  items: [Product]
+  cursor: PaginationCursor!
+}
+
+# Product type
+type Product {
+  # product id
+  productId: ID!
+
+  # product status
+  status: ProductStatus!
+
+  # product name
+  name: String!
+
+  # product description
+  description: String
+
+  # product weight
+  weight: String
+
+  # payment offers
+  paymentOffers: [ProductPaymentOffer]
+}
+
+enum ProductStatus {
+  draft
+  published
+  archived
+}
+
+type ProductPaymentOffer {
+  # payment offer id
+  paymentOfferId: ID!
+
+  # product status
+  status: ProductPaymentOfferStatus!
+
+  # payment offer provider
+  provider: PaymentOfferProvider!
+
+  # payment offer name
+  name: String!
+
+  # payment offer population
+  population: String
+
+  # provider payment offer id
+  providerPaymentOfferId: String
+
+  # payment type
+  paymentType: PaymentType
+
+  # price
+  price: String
+
+  # currency
+  currency: String
+
+  # payment interval (day, week, month)
+  interval: String
+
+  # payment interval count
+  intervalCount: String
+}
+
+enum ProductPaymentOfferStatus {
+  active
+  archived
+}
+
+enum PaymentOfferProvider {
+  stripe
+  google
+  apple
+}
+
+enum PaymentType {
+  recurring
+  one_time
+}
+
+# itemProduct type
+type ItemProduct {
+  # item id
+  itemId: ID!
+
+  # Item type (video, event, ...)
+  itemType: String!
+
+  # Product id
+  productId: ID!
+}
+
+# List of fan products (paginated) type
+type FanProducts {
+  items: [FanProduct]
+  cursor: PaginationCursor!
+}
+
+# FanProduct type
+type FanProduct {
+  # product id
+  productId: ID!
+
+  # status
+  status: String
+
+  # payment offer provider
+  provider: PaymentOfferProvider
+
+  # payment offer id
+  paymentOfferId: ID
+
+  # paymentType  (one-off / periodic)
+  paymentType: String
+
+  # subscriptionId
+  subscriptionId: String
+
+  # Current period end date
+  periodEndDate: String
+
+  # Cancelation flag
+  canceled: Boolean
+
+  # Payment date (for one time payment)
+  paymentDate: String
+}
+
+type StripeSubscriptionEvent {
+  # Subscription status
+  status: String
+
+  # Message returned by Stripe (in case of error)
+  message: String
+
+  # Stripe payment intent secret key (required for 2 steps validation)
+  secret: String
+}
+
+# Stripe checkout session type
+type StripeCheckoutSession {
+  id: String
+}
+
+enum CacheControlScope {
+  PUBLIC
+  PRIVATE
+}
+
+# The `Upload` scalar type represents a file upload.
+scalar Upload

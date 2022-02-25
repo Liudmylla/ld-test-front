@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { ReactElement } from "react";
+import {
+  Container,
+  Box,
+  Theme,
+  makeStyles,
+  createStyles,
+} from "@material-ui/core";
+import AllVideos from "../src/components/all-videos/all-videos";
 
-function App() {
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      paddingTop: theme.spacing(2),
+      paddingBottom: theme.spacing(2),
+    },
+  })
+);
+
+export default function App(): ReactElement {
+  const classes = useStyles();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container className={classes.root}>
+      <Box display="flex" justifyContent="center" alignContent="center">
+        <AllVideos />
+      </Box>
+    </Container>
   );
 }
-
-export default App;

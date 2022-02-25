@@ -1,0 +1,13 @@
+query GetAllVideos {
+  allVideos(limit: 4) {
+    __typename
+    items {
+      id
+      __typename
+      name
+      poster
+      mobilePoster
+      url
+    }
+  }
+}
