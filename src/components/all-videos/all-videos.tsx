@@ -1,17 +1,7 @@
-import {
-  CircularProgress,
-  Paper,
-  Card,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@material-ui/core";
+import { CircularProgress, Grid, Typography } from "@material-ui/core";
 import React, { ReactElement } from "react";
 import { useGetAllVideosQuery } from "../../generated/graphql";
+
 import VideoInfo from "../video-info/video-info";
 
 interface Props {}
@@ -39,14 +29,15 @@ export default function AllVideos(props: Props): ReactElement {
 
   // Display the data
   return (
-    <TableContainer component={Card}>
-      <Table>
-        <TableBody>
-          {data.allVideos.items.map((video) => (
+    <>
+      {" "}
+      <Grid container spacing={2}>
+        {data.allVideos.items.map((video) => (
+          <Grid item xs={6}>
             <VideoInfo video={video} key={video?.id!} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </Grid>
+        ))}
+      </Grid>
+    </>
   );
 }
