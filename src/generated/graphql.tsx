@@ -1843,6 +1843,13 @@ export type GetAllVideosQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllVideosQuery = { __typename?: 'Query', allVideos: { __typename: 'Videos', items?: Array<{ __typename: 'Video', id: string, name: string, poster?: string | null, mobilePoster?: string | null, url?: string | null, Tags?: Array<{ __typename: 'Tag', id: string, name: string } | null> | null } | null> | null } };
 
+export type GetVideoByIdQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetVideoByIdQuery = { __typename?: 'Query', video: { __typename?: 'Video', id: string, name: string, poster?: string | null, mobilePoster?: string | null, url?: string | null, Tags?: Array<{ __typename?: 'Tag', id: string, name: string } | null> | null } };
+
 
 export const GetAllVideosFunzoneDocument = gql`
     query GetAllVideosFunzone {
@@ -1985,6 +1992,49 @@ export function useGetAllVideosLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetAllVideosQueryHookResult = ReturnType<typeof useGetAllVideosQuery>;
 export type GetAllVideosLazyQueryHookResult = ReturnType<typeof useGetAllVideosLazyQuery>;
 export type GetAllVideosQueryResult = Apollo.QueryResult<GetAllVideosQuery, GetAllVideosQueryVariables>;
+export const GetVideoByIdDocument = gql`
+    query GetVideoById($id: ID!) {
+  video(id: $id) {
+    id
+    name
+    poster
+    mobilePoster
+    url
+    Tags {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetVideoByIdQuery__
+ *
+ * To run a query within a React component, call `useGetVideoByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetVideoByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetVideoByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetVideoByIdQuery(baseOptions: Apollo.QueryHookOptions<GetVideoByIdQuery, GetVideoByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetVideoByIdQuery, GetVideoByIdQueryVariables>(GetVideoByIdDocument, options);
+      }
+export function useGetVideoByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetVideoByIdQuery, GetVideoByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetVideoByIdQuery, GetVideoByIdQueryVariables>(GetVideoByIdDocument, options);
+        }
+export type GetVideoByIdQueryHookResult = ReturnType<typeof useGetVideoByIdQuery>;
+export type GetVideoByIdLazyQueryHookResult = ReturnType<typeof useGetVideoByIdLazyQuery>;
+export type GetVideoByIdQueryResult = Apollo.QueryResult<GetVideoByIdQuery, GetVideoByIdQueryVariables>;
 
       export interface PossibleTypesResultData {
         possibleTypes: {

@@ -1,0 +1,13 @@
+query GetVideoById($id: ID!) {
+  video(id: $id) {
+    id
+    name
+    poster
+    mobilePoster
+    url
+    Tags {
+      id
+      name
+    }
+  }
+}
