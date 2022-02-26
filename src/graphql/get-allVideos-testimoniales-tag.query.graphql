@@ -1,5 +1,5 @@
-query GetAllVideos {
-  allVideos(limit: 4) {
+query GetAllVideosTestimoniales {
+  allVideos(tags: "Testimoniales", limit: 4) {
     __typename
     items {
       id

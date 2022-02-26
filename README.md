@@ -1,5 +1,6 @@
 # Getting Started with Create React App
 
+<!-- yarn gen-graphql -->
 <!-- export interface ApolloProviderProps<TCache> {
 client: ApolloClient<TCache> | DefaultClient<TCache>; -->
 

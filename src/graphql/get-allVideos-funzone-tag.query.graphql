@@ -1,5 +1,5 @@
-query GetAllVideos {
-  allVideos(limit: 4) {
+query GetAllVideosFunzone {
+  allVideos(tags: "Funzone", limit: 4) {
     __typename
     items {
       id

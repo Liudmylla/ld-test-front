@@ -1,14 +1,14 @@
 import { CircularProgress, Grid, Typography } from "@material-ui/core";
 import React, { ReactElement } from "react";
-import { useGetAllVideosQuery } from "../../generated/graphql";
+import { useGetAllVideosFunzoneQuery } from "../../generated/graphql";
 
 import VideoInfo from "../video-info/video-info";
 
 interface Props {}
-
-export default function AllVideos(props: Props): ReactElement {
+export {};
+export default function FunzoneVideos(props: Props): ReactElement {
   // Use hook to retrieve data from the backend
-  const { data, loading, error } = useGetAllVideosQuery();
+  const { data, loading, error } = useGetAllVideosFunzoneQuery();
 
   // Query state management
   if (loading) {
@@ -30,7 +30,7 @@ export default function AllVideos(props: Props): ReactElement {
   // Display the data
   return (
     <>
-      <Typography variant="h5">ALL VIDEOS</Typography>
+      <Typography variant="h5">FUNZONE</Typography>
       <Grid container spacing={2}>
         {data.allVideos.items.map((video) => (
           <Grid item xs={3}>

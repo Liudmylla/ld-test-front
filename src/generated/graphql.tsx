@@ -1828,12 +1828,116 @@ export type VendorSso = {
   tokenMeta?: InputMaybe<Scalars['String']>;
 };
 
+export type GetAllVideosFunzoneQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllVideosFunzoneQuery = { __typename?: 'Query', allVideos: { __typename: 'Videos', items?: Array<{ __typename: 'Video', id: string, name: string, poster?: string | null, mobilePoster?: string | null, url?: string | null, Tags?: Array<{ __typename: 'Tag', id: string, name: string } | null> | null } | null> | null } };
+
+export type GetAllVideosTestimonialesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllVideosTestimonialesQuery = { __typename?: 'Query', allVideos: { __typename: 'Videos', items?: Array<{ __typename: 'Video', id: string, name: string, poster?: string | null, mobilePoster?: string | null, url?: string | null, Tags?: Array<{ __typename: 'Tag', id: string, name: string } | null> | null } | null> | null } };
+
 export type GetAllVideosQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllVideosQuery = { __typename?: 'Query', allVideos: { __typename: 'Videos', items?: Array<{ __typename: 'Video', id: string, name: string, poster?: string | null, mobilePoster?: string | null, url?: string | null } | null> | null } };
+export type GetAllVideosQuery = { __typename?: 'Query', allVideos: { __typename: 'Videos', items?: Array<{ __typename: 'Video', id: string, name: string, poster?: string | null, mobilePoster?: string | null, url?: string | null, Tags?: Array<{ __typename: 'Tag', id: string, name: string } | null> | null } | null> | null } };
 
 
+export const GetAllVideosFunzoneDocument = gql`
+    query GetAllVideosFunzone {
+  allVideos(tags: "Funzone", limit: 4) {
+    __typename
+    items {
+      id
+      __typename
+      name
+      poster
+      mobilePoster
+      url
+      Tags {
+        id
+        __typename
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllVideosFunzoneQuery__
+ *
+ * To run a query within a React component, call `useGetAllVideosFunzoneQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllVideosFunzoneQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllVideosFunzoneQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllVideosFunzoneQuery(baseOptions?: Apollo.QueryHookOptions<GetAllVideosFunzoneQuery, GetAllVideosFunzoneQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllVideosFunzoneQuery, GetAllVideosFunzoneQueryVariables>(GetAllVideosFunzoneDocument, options);
+      }
+export function useGetAllVideosFunzoneLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllVideosFunzoneQuery, GetAllVideosFunzoneQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllVideosFunzoneQuery, GetAllVideosFunzoneQueryVariables>(GetAllVideosFunzoneDocument, options);
+        }
+export type GetAllVideosFunzoneQueryHookResult = ReturnType<typeof useGetAllVideosFunzoneQuery>;
+export type GetAllVideosFunzoneLazyQueryHookResult = ReturnType<typeof useGetAllVideosFunzoneLazyQuery>;
+export type GetAllVideosFunzoneQueryResult = Apollo.QueryResult<GetAllVideosFunzoneQuery, GetAllVideosFunzoneQueryVariables>;
+export const GetAllVideosTestimonialesDocument = gql`
+    query GetAllVideosTestimoniales {
+  allVideos(tags: "Testimoniales", limit: 4) {
+    __typename
+    items {
+      id
+      __typename
+      name
+      poster
+      mobilePoster
+      url
+      Tags {
+        id
+        __typename
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllVideosTestimonialesQuery__
+ *
+ * To run a query within a React component, call `useGetAllVideosTestimonialesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllVideosTestimonialesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllVideosTestimonialesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllVideosTestimonialesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllVideosTestimonialesQuery, GetAllVideosTestimonialesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllVideosTestimonialesQuery, GetAllVideosTestimonialesQueryVariables>(GetAllVideosTestimonialesDocument, options);
+      }
+export function useGetAllVideosTestimonialesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllVideosTestimonialesQuery, GetAllVideosTestimonialesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllVideosTestimonialesQuery, GetAllVideosTestimonialesQueryVariables>(GetAllVideosTestimonialesDocument, options);
+        }
+export type GetAllVideosTestimonialesQueryHookResult = ReturnType<typeof useGetAllVideosTestimonialesQuery>;
+export type GetAllVideosTestimonialesLazyQueryHookResult = ReturnType<typeof useGetAllVideosTestimonialesLazyQuery>;
+export type GetAllVideosTestimonialesQueryResult = Apollo.QueryResult<GetAllVideosTestimonialesQuery, GetAllVideosTestimonialesQueryVariables>;
 export const GetAllVideosDocument = gql`
     query GetAllVideos {
   allVideos(limit: 4) {
@@ -1845,6 +1949,11 @@ export const GetAllVideosDocument = gql`
       poster
       mobilePoster
       url
+      Tags {
+        id
+        __typename
+        name
+      }
     }
   }
 }

@@ -12,11 +12,7 @@ export default function VideoInfo(props: Props): ReactElement {
     <div className="video-info">
       <Card>
         <HomePageVideo url={props.video?.url} poster={props.video?.poster} />
-        <CardContent>
-          <Typography gutterBottom component="div">
-            {props.video?.name}
-          </Typography>
-        </CardContent>
+        <div className="video-card-content">{props.video?.name}</div>
       </Card>
     </div>
   );
