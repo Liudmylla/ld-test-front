@@ -18,24 +18,24 @@ Query à utiliser :
 Header à configurer : "x-account-key": l'accountKey
 TODO :
 
-# Configurer un projet NextJS (ou Create-React-App) + Apollo
-
-# Appeler la requête graphql pour récupérer les évènements :
-
+# Configurer un projet NextJS (ou Create-React-App) + Apollo   
+ok
+# Appeler la requête graphql pour récupérer les évènements : 
+ok
 - click sur le logo => home page du site, requête allVideos(limit: 4) (design OTT-Whitelabel-Home.png)
 - click sur le menu items "Funzone" => page dédiée à la catégorie "Funzone", requête allVideos(tags: "Funzone", limit: 4) (design OTT-Whitelabel-Categories.png)
 - click sur le menu items "Testimoniales" => page dédiée à la catégorie "Testimoniales", requête allVideos(tags: "Testimoniales", limit: 4) (design OTT-Whitelabel-Categories.png)
 - en top de la home page mettre un lecteur video sur l'url suivante : l'url du stream live, avec un placeholder de ton choix (nous pourrons t'en fournir un au besoin).
 
-# Afficher la liste des vidéos sous forme de cartes avec :
-
+# Afficher la liste des vidéos sous forme de cartes avec : 
+ok
 - la vignette (video.poster) (utiliser un placeholder générique si poster est vide)
 - en dessous, le nom de la vidéo
 
 # Gestion de la pagination avec l'objet 'cursor' (cursor contient 2 attributs : after et before, pour récupérer les éléments suivants il faut passer le after à la requête allVideos)
-
+non fait
 # Sur click sur une vidéo :
-
+ok avec un bug de types
 - navigation jusqu'à une page de détails
 - appeler la query video(id: <id de la vidéo>)
 - un player vidéo avec la vignette (video.poster) (avec un placeholder générique si pas d'image)
@@ -44,13 +44,13 @@ TODO :
 - en dessous, afficher les 4 premières vidéos de la catégorie précédente ("Testimoniales" si on venait de la page "Testimoniales", "Funzone" sinon)
 
 # Utiliser les media queries pour avoir un affichage cohérent sur différentes tailles d’écran
-
+ok avec materiel-ui
 # Ecrire des tests pour valider les composants
-
+non fait
 # Livraison sur un repository git (utiliser un process de commit tel que le git-flow)
-
+ok
 # ATTENTION : l'url du endpoint graphql, l'url du stream live et l'accountKey doivent être absents du repository git pour des raisons de sécurité (utiliser les .env et .gitignore).
-
+ok
 REQUIS :
 
 - react / NextJS ou Create-React-App
