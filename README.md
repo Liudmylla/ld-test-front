@@ -62,8 +62,9 @@ INTERDIT :
 - redux
 
 REALISATION :
-TS/react/Create-React-App
+react/Create-React-App
 Apollo
+TS/Graphql
 
 <!-- export interface ApolloProviderProps<TCache> {
 client: ApolloClient<TCache> | DefaultClient<TCache>; -->
