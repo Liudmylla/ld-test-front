@@ -1,52 +1,69 @@
-# Getting Started with Create React App
+## Test technique frontend
 
-<!-- yarn gen-graphql -->
+Afficher faire un site de listes de vidéos catégorisées via un endPoint GraphQL
+
+Nous pouvons te fournir des designs des pages, au besoin.
+
+Url du endpoint : l'url du endpoint graphql
+
+(Ouvrir cette url dans un navigateur pour avoir un playground graphql et la documentation de l’api)
+
+Query à utiliser :
+
+- allVideos(limit: 4) => pour la home du site
+- allVideos(tags: "Funzone", limit: 4) => pour la page "Funzone"
+- allVideos(tags: "Testimoniales", limit: 4) => pour la page "Testimoniales"
+- video(id: <id de la vidéo à afficher>) => pour la page détails d'une vidéo
+
+Header à configurer : "x-account-key": l'accountKey
+TODO :
+
+# Configurer un projet NextJS (ou Create-React-App) + Apollo
+
+# Appeler la requête graphql pour récupérer les évènements :
+
+- click sur le logo => home page du site, requête allVideos(limit: 4) (design OTT-Whitelabel-Home.png)
+- click sur le menu items "Funzone" => page dédiée à la catégorie "Funzone", requête allVideos(tags: "Funzone", limit: 4) (design OTT-Whitelabel-Categories.png)
+- click sur le menu items "Testimoniales" => page dédiée à la catégorie "Testimoniales", requête allVideos(tags: "Testimoniales", limit: 4) (design OTT-Whitelabel-Categories.png)
+- en top de la home page mettre un lecteur video sur l'url suivante : l'url du stream live, avec un placeholder de ton choix (nous pourrons t'en fournir un au besoin).
+
+# Afficher la liste des vidéos sous forme de cartes avec :
+
+- la vignette (video.poster) (utiliser un placeholder générique si poster est vide)
+- en dessous, le nom de la vidéo
+
+# Gestion de la pagination avec l'objet 'cursor' (cursor contient 2 attributs : after et before, pour récupérer les éléments suivants il faut passer le after à la requête allVideos)
+
+# Sur click sur une vidéo :
+
+- navigation jusqu'à une page de détails
+- appeler la query video(id: <id de la vidéo>)
+- un player vidéo avec la vignette (video.poster) (avec un placeholder générique si pas d'image)
+- l'url de la vidéo est protégée et ne fonctionnera pas, utiliser l'url du stream live pour le lecteur à la place
+- en dessous, le nom de la vidéo
+- en dessous, afficher les 4 premières vidéos de la catégorie précédente ("Testimoniales" si on venait de la page "Testimoniales", "Funzone" sinon)
+
+# Utiliser les media queries pour avoir un affichage cohérent sur différentes tailles d’écran
+
+# Ecrire des tests pour valider les composants
+
+# Livraison sur un repository git (utiliser un process de commit tel que le git-flow)
+
+# ATTENTION : l'url du endpoint graphql, l'url du stream live et l'accountKey doivent être absents du repository git pour des raisons de sécurité (utiliser les .env et .gitignore).
+
+REQUIS :
+
+- react / NextJS ou Create-React-App
+- apollo
+
+INTERDIT :
+
+- JQuery / Bootstrap / Lodash
+- redux
+
+REALISATION :
+TS/react/Create-React-App
+Apollo
+
 <!-- export interface ApolloProviderProps<TCache> {
 client: ApolloClient<TCache> | DefaultClient<TCache>; -->
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `yarn start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-yarn gen-graphql

@@ -5,18 +5,15 @@ import {
   Card,
   CardMedia,
 } from "@material-ui/core";
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 import { useGetAllVideosFunzoneQuery } from "../../generated/graphql";
 import { Link } from "react-router-dom";
-import VideoInfo from "../video-info/video-info";
 
 interface Props {}
-export {};
-export default function FunzoneVideos(props: Props): ReactElement {
-  // Use hook to retrieve data from the backend
-  const { data, loading, error } = useGetAllVideosFunzoneQuery();
+// todo pagination
 
-  // Query state management
+export default function FunzoneVideos(props: Props): ReactElement {
+  const { data, loading, error } = useGetAllVideosFunzoneQuery();
   if (loading) {
     return <CircularProgress />;
   } else if (error) {
@@ -33,13 +30,12 @@ export default function FunzoneVideos(props: Props): ReactElement {
     );
   }
 
-  // Display the data
   return (
     <>
       <Typography variant="h5">FUNZONE</Typography>
       <Grid container spacing={2}>
         {data.allVideos.items.map((video) => (
-          <Grid item xs={3}>
+          <Grid item sm={12} md={6} lg={3}>
             <Card>
               <Link to={`/video/${video?.id}`}>
                 <CardMedia

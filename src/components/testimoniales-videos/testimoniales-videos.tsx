@@ -5,18 +5,16 @@ import {
   Card,
   CardMedia,
 } from "@material-ui/core";
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 import { useGetAllVideosTestimonialesQuery } from "../../generated/graphql";
 import { Link } from "react-router-dom";
-import VideoInfo from "../video-info/video-info";
 
 interface Props {}
-export {};
+// todo pagination
+
 export default function TestimonialesVideos(props: Props): ReactElement {
-  // Use hook to retrieve data from the backend
   const { data, loading, error } = useGetAllVideosTestimonialesQuery();
 
-  // Query state management
   if (loading) {
     return <CircularProgress />;
   } else if (error) {
@@ -33,18 +31,16 @@ export default function TestimonialesVideos(props: Props): ReactElement {
     );
   }
 
-  // Display the data
   return (
     <>
       <Typography variant="h5">TESTIMONIALES</Typography>
       <Grid container spacing={2}>
         {data.allVideos.items.map((video) => (
-          <Grid item xs={3}>
+          <Grid item sm={12} md={6} lg={3}>
             <Card>
               <Link to={`/video/${video?.id}`}>
                 <CardMedia
                   component="img"
-                  height="194"
                   image={video?.poster}
                   alt={video?.name}
                 />

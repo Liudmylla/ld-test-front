@@ -1,5 +1,14 @@
-import React from "react";
+import { Link } from "react-router-dom";
 const Footer = () => {
-  return <h1>Is here footer of the side </h1>;
+  // todo icons, styles
+  return (
+    <header className="footer">
+      <nav className="footer__nav-container">
+        <Link to="/">Home</Link>
+        <Link to="/funzone">Funzone</Link>
+        <Link to="/testimoniales">Testimoniales</Link>
+      </nav>
+    </header>
+  );
 };
 export default Footer;

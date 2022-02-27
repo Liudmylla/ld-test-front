@@ -1,10 +1,10 @@
-import React, { ReactElement } from "react";
 import { Route, Routes } from "react-router-dom";
 import NavBar from "./components/navbar";
 import Funzone from "./pages/funzone";
 import Testimoniales from "./pages/testimoniales";
 import Home from "./pages/home";
 import Video from "./pages/video";
+import Footer from "./components/footer";
 const App = () => {
   return (
     <>
@@ -15,6 +15,7 @@ const App = () => {
         <Route path="/testimoniales" element={<Testimoniales />} />
         <Route path="/video/:id" element={<Video />} />
       </Routes>
+      <Footer />
     </>
   );
 };

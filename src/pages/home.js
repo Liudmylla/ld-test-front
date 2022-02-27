@@ -5,9 +5,7 @@ const Home = () => {
   return (
     <>
       <HomePageVideo
-        url={
-          "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8"
-        }
+        url={process.env.REACT_APP_STREAM_LIVE_URL}
         poster="https://ibb.co/FbFVLPz"
       />
       <AllVideos />
