@@ -1,7 +1,13 @@
-import { CircularProgress, Grid, Typography } from "@material-ui/core";
+import {
+  CircularProgress,
+  Grid,
+  Typography,
+  CardMedia,
+  Card,
+} from "@material-ui/core";
 import React, { ReactElement } from "react";
 import { useGetAllVideosQuery } from "../../generated/graphql";
-
+import { Link } from "react-router-dom";
 import VideoInfo from "../video-info/video-info";
 
 interface Props {}
@@ -34,10 +40,22 @@ export default function AllVideos(props: Props): ReactElement {
       <Grid container spacing={2}>
         {data.allVideos.items.map((video) => (
           <Grid item xs={3}>
-            <VideoInfo video={video} key={video?.id!} />
+            <Card>
+              <Link to={`/video/${video?.id}`}>
+                <CardMedia
+                  component="img"
+                  height="194"
+                  image={video?.poster}
+                  alt={video?.name}
+                />
+              </Link>
+              <div className="video-card-content">{video?.name}</div>
+            </Card>
           </Grid>
         ))}
       </Grid>
     </>
   );
 }
+
+/* <VideoInfo video={video} key={video?.id!} /> */

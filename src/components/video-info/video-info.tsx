@@ -1,30 +1,41 @@
 import React, { ReactElement } from "react";
 import { Video, Maybe } from "../../generated/graphql";
-import { Card, CardMedia } from "@material-ui/core";
 import HomePageVideo from "../home-page-video";
 import { useGetVideoByIdQuery } from "../../generated/graphql";
-import { Link } from "react-router-dom";
+
+import { useParams } from "react-router-dom";
+
 interface Props {
   video?: Maybe<Video>;
 }
 
 export default function VideoInfo(props: Props): ReactElement {
-  // const { data, loading, error } = useGetVideoByIdQuery(props.video?.id);
+  const { id } = useParams();
+  console.log(id);
+
+  const data = {
+    video: {
+      url: "",
+      poster: "",
+    },
+  };
+
+  // const { data, loading, error } = useGetVideoByIdQuery(id!);
+
   return (
     <div className="video-info">
-      <Card>
-        <Link to={`/video/${props.video?.id}`}>
-          <CardMedia
-            component="img"
-            height="194"
-            image={props.video?.poster}
-            alt={props.video?.name}
-          />
-        </Link>
-        <div className="video-card-content">{props.video?.name}</div>
-        {/* <HomePageVideo url={props.video?.url} poster={props.video?.poster} />
-       {props.video?.name}</div> */}
-      </Card>
+      <HomePageVideo
+        url={
+          !!data?.video?.url
+            ? data?.video?.url
+            : process.env.REACT_APP_STREAM_LIVE_URL
+        }
+        poster={
+          !!data?.video?.poster
+            ? data?.video?.poster
+            : "https://media.istockphoto.com/vectors/no-image-vector-symbol-missing-available-icon-no-gallery-for-this-vector-id1128826884?k=20&m=1128826884&s=612x612&w=0&h=3GMtsYpW6jmRY9L47CwA-Ou0yYIc5BXRQZmcc81MT78="
+        }
+      />
     </div>
   );
 }

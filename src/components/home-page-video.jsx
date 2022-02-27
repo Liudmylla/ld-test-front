@@ -1,6 +1,7 @@
 import React from "react";
 import ReactHlsPlayer from "react-hls-player";
 const HomePageVideo = ({ url, poster }) => {
+  console.log(url);
   return (
     <ReactHlsPlayer
       src={url}
